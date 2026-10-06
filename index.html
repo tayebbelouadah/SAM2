@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة ومتابعة غيابات الطلاب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="login-page" class="view-section active">
+        <div class="login-container">
+            <img src="univ_logo.png" alt="شعار الجامعة" class="login-logo">
+            <h2>تسجيل الدخول</h2>
+            <p class="login-subtitle">نظام إدارة غيابات الطلبة</p>
+            <form id="login-form" onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+                <button type="submit" class="btn login-btn">
+                    دخول
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                </button>
+                <p class="error-msg" id="login-error"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="view-section">
+        <header>
+            <div class="logos">
+                <img src="univ_logo.png" alt="شعار الجامعة" class="header-logo">
+            </div>
+            <div class="header-titles">
+                <h1>جامعة محمد بوضياف بالمسيلة</h1>
+                <h2>كلية الحقوق والعلوم السياسية</h2>
+            </div>
+            <div class="logos">
+                <img src="faculty_logo.jpg" alt="شعار الكلية" class="header-logo">
+            </div>
+        </header>
+
+        <nav class="no-print">
+            <ul>
+                <li><a href="#" onclick="showView('dashboard-view')">لوحة القيادة الرئيسية</a></li>
+                <li><a href="#" onclick="showView('employee-view')">لوحة الموظفين</a></li>
+                <li><a href="#" onclick="showView('justification-view')">تبرير الغياب</a></li>
+                <li><a href="#" onclick="logout()">تسجيل الخروج</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="app-view active">
+                <h3>لوحة القيادة الرئيسية</h3>
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <h4>إجمالي الغيابات المسجلة</h4>
+                        <p id="total-absences">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee View -->
+            <div id="employee-view" class="app-view">
+                <h3>لوحة الموظفين - إدخال بيانات غياب</h3>
+                <form id="absence-form" onsubmit="return handleAddAbsence(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>الرقم التسلسلي</label>
+                            <input type="text" id="serial-number" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم التسجيل</label>
+                            <input type="text" id="reg-number" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>اللقب</label>
+                            <input type="text" id="last-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الاسم</label>
+                            <input type="text" id="first-name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>عام البكالوريا</label>
+                            <input type="number" id="bac-year" required>
+                        </div>
+                        <div class="form-group">
+                            <label>السنة / المستوى</label>
+                            <input type="text" id="level" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الفوج</label>
+                            <input type="text" id="group" required>
+                        </div>
+                        <div class="form-group">
+                            <label>السنة الدراسية</label>
+                            <input type="text" id="academic-year" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>اسم المقياس (غياب في)</label>
+                            <input type="text" id="module" required>
+                        </div>
+                        <div class="form-group">
+                            <label>مدة الغياب</label>
+                            <input type="text" id="absence-duration" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الشهادة صادرة عن</label>
+                            <input type="text" id="certificate-issuer" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>الشهادة المؤرخة في</label>
+                            <input type="date" id="cert-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المودع بالإدارة بتاريخ</label>
+                            <input type="date" id="submit-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الفترة الممتدة (من)</label>
+                            <input type="date" id="start-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الفترة الممتدة (إلى)</label>
+                            <input type="date" id="end-date" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">حفظ البيانات</button>
+                </form>
+
+                <hr style="margin: 30px 0;">
+                
+                <h3>قائمة الغيابات المؤرشفة</h3>
+                <table id="absences-table">
+                    <thead>
+                        <tr>
+                            <th>الرقم التسلسلي</th>
+                            <th>رقم التسجيل</th>
+                            <th>اللقب والاسم</th>
+                            <th>المستوى</th>
+                            <th>مدة الغياب</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Justification View -->
+            <div id="justification-view" class="app-view">
+                <div class="no-print" style="margin-bottom: 20px;">
+                    <h3>إعداد تبرير غياب</h3>
+                    <div class="form-group" style="max-width: 400px; margin-bottom: 10px;">
+                        <label>اختر الطالب من القائمة لملء البيانات تلقائياً (اختياري):</label>
+                        <select id="student-select" onchange="fillJustificationForm()">
+                            <option value="">-- إدخال يدوي --</option>
+                        </select>
+                    </div>
+                    <button class="btn" style="width: auto;" onclick="window.print()">طباعة بصيغة PDF</button>
+                </div>
+                
+                <div class="print-area" id="print-area">
+                    <div class="print-header-container">
+                        <img src="univ_logo.png" alt="شعار الجامعة" class="print-logo">
+                        <div class="print-header-text">
+                            <p>جامعة محمد بوضياف بالمسيلة</p>
+                            <p>كلية الحقوق والعلوم السياسية</p>
+                            <p>مصلحة التمدرس</p>
+                        </div>
+                        <img src="faculty_logo.jpg" alt="شعار الكلية" class="print-logo">
+                    </div>
+                    <div class="print-title">
+                        <h3>تبرير الغياب</h3>
+                    </div>
+                    
+                    <div class="print-content">
+                        <p class="justification-text">
+                            بناء على القرار رقم 711/11 المتعلق بالتسيير البيداغوجي لا سيما المادة 28 الخاصة باجراءات تبرير الغياب و المادة 30 المحددة للمبررات المقبولة ، وبناء على النظام الداخلي للتسيير البيداغوجي لجامعة المسيلة لا سيما المواد 11-12-13. فإن رئيس مصلحة التمدرس يقر قبول المبرر المتمثل في: 
+                            <select class="inline-select" id="just-type">
+                                <option>شهادة طبية</option>
+                                <option>شهادة وفاة للأصول أو الفروع</option>
+                                <option>شهادة زواج الطالب</option>
+                                <option>استدعاء رسمي</option>
+                                <option>عطلة أمومة</option>
+                                <option>أخرى</option>
+                            </select> ، 
+                            المؤرخة في: <input type="date" class="inline-input" id="just-date">، 
+                            الفترة الممتدة: ( من <input type="date" class="inline-input" id="just-start-date"> إلى <input type="date" class="inline-input" id="just-end-date"> ). 
+                            المودع بالإدارة بتاريخ: <input type="date" class="inline-input" id="just-submit-date"> 
+                            والخاص بالطالب: <input type="text" class="inline-input long-input" id="just-student-name" placeholder="اسم ولقب الطالب">. 
+                            السنة: <input type="text" class="inline-input" id="just-level" placeholder="المستوى">. 
+                            الفوج: <input type="text" class="inline-input short-input" id="just-group" placeholder="الفوج"> . 
+                            غياب في مقياس: <input type="text" class="inline-input" id="just-module" placeholder="اسم المقياس">.
+                        </p>
+                        <p class="justification-text">
+                            فعلى الأستاذ المعني اتخاذ الإجراءات المناسبة في حدود ما يسمح به القانون .
+                        </p>
+                    </div>
+
+                    <div class="print-footer">
+                        <p>المسيلة في: <span id="current-print-date"></span></p>
+                        <p style="margin-left: 50px;"><strong>إمضاء رئيس القسم</strong></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="no-print">
+            <p>تصميم وإنجاز: أ.د/ بلواضح الطيب</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
